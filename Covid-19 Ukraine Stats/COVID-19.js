@@ -18,7 +18,7 @@
 
 // change "country" to a value from https://coronavirus-19-api.herokuapp.com/countries/
 
-const country = "Ukraine"
+const country = "Canada"
 const url = `https://coronavirus-19-api.herokuapp.com/countries/${country}`
 const req = new Request(url)
 const res = await req.loadJSON()
@@ -36,7 +36,7 @@ if (config.runsInWidget) {
   // add header
   let row = new UITableRow()
   row.isHeader = true
-  row.addText(`Статистика Covid-19 по ${country}`)
+  row.addText(`Covid-19 Statistics for ${country}`)
   table.addRow(row)
   
   // fill data
