@@ -1,5 +1,5 @@
 # WeatherWidget
-WeatherWidget is a Scriptable widget for on iOS .
+WeatherWidget is a Scriptable widget for iOS .
 
 ![Widget Preview](https://github.com/JaiDoubleU/Scriptable/blob/d17afe163b787bd4cef9d1eee88afd12a21f00fc/WeatherWidget/E96F7D36-CCF9-4309-9128-E6F7CA02E225.jpeg)
 
