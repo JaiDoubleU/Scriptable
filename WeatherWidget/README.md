@@ -2,6 +2,8 @@
 
 WeatherWidget is a widget for Scriptable on iOS .
 
+![Image of Yaktocat](https://octodex.github.com/images/yaktocat.png)
+
 ## Prerequisites
 
 You'll need to obtain a free API key from openweathermap.org/appid.
