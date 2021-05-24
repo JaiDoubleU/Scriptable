@@ -1,6 +1,5 @@
 # WeatherWidget
-
-WeatherWidget is a widget for Scriptable on iOS .
+WeatherWidget is a Scriptable widget for on iOS .
 
 ![Widget Preview](https://github.com/JaiDoubleU/Scriptable/blob/d17afe163b787bd4cef9d1eee88afd12a21f00fc/WeatherWidget/E96F7D36-CCF9-4309-9128-E6F7CA02E225.jpeg)
 
@@ -10,8 +9,9 @@ You'll need to obtain a free API key from openweathermap.org/appid.
 
 ## Usage
 
+To use this weather widget, do the following:
+
 ```
-To use this weather widget:
 1. Get a free API key from openweathermap.org/appid.
 2. Paste your API key in the script
 3. Run the script to ensure it runs correctly 
