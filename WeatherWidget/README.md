@@ -4,9 +4,7 @@ WeatherWidget is a widget for Scriptable on iOS .
 
 ## Prerequisites
 
-```
 You'll need to obtain a free API key from openweathermap.org/appid.
-```
 
 ## Usage
 
