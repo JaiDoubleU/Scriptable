@@ -1,5 +1,5 @@
-# Scriptable-IOS-Widget
-Scripts collection for use with Scriptable App as IOS Widget.  
+# Scriptable Widgets
+My collection of Sscripts for use with the Scriptable App as IOS Widget.  
 Download the App "Scriptable" from the App Store: https://apps.apple.com/us/app/scriptable/id1405459188
 and use this Scripts.  
 
