@@ -2,7 +2,7 @@
 
 WeatherWidget is a widget for Scriptable on iOS .
 
-![Image of Yaktocat](https://octodex.github.com/images/yaktocat.png)
+![Widget Preview](https://github.com/JaiDoubleU/Scriptable/blob/d17afe163b787bd4cef9d1eee88afd12a21f00fc/WeatherWidget/E96F7D36-CCF9-4309-9128-E6F7CA02E225.jpeg)
 
 ## Prerequisites
 
