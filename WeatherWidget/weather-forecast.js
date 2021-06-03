@@ -26,7 +26,7 @@ const widgetPreview = "large"
 const imageBackground = true
 
 // Set to true to reset the widget's background image.
-const forceImageUpdate = false
+const forceImageUpdate = true
 
 // based on iPhone XR screen 665x260
 const maxWidth = 670
