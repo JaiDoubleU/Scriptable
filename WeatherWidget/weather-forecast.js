@@ -1,25 +1,17 @@
 // Variables used by Scriptable.
 // These must be at the very top of the file. Do not edit.
-// icon-color: pink; icon-glyph: sun;
-//
-
-// by italoboy and tnx to Max Zeryck for the original code 
-
-// Special tnx to thewaytozion for creating this idea.
-// Special tnx to P Jai Rjlin for assisting.
-
 // 
 
 /*
  * SETUP
  * Use this section to set up the widget.
- * ======================================
+ * ==============================
  */
 
  /// <reference path="../scriptable.d.ts" />
 
 // To use weather, get a free API key at openweathermap.org/appid and paste it in between the quotation marks.
-const apiKey = "your openweathermap API key"
+const apiKey = "c86deb6077d477b149c872e002dab460"
 
 // Set the locale code. Leave blank "" to match the device's locale. You can change the hard-coded text strings in the TEXT section below.
 let locale = ""
@@ -37,13 +29,15 @@ const imageBackground = true
 const forceImageUpdate = false
 
 // based on iPhone XR screen 665x260
-const maxWidth = 660;
+const maxWidth = 670
+// const maxWidth = Device.screenSize().width;
 const maxHeight = 260;
 const chartHeight = 125;
 
-
 // Set the padding around each item. Default is 5.
-const padding = 0
+const padding = 0;
+const paddingTopBottom=0;
+const paddingLeftRight=15;
 
 // hoursToShow : number > Number of predicted hours to show, Eg: 3 = a total of 4 hours in the widget (Default: 3 for the small widget and 11 for the medium one).
 const hoursToShow = 9
@@ -78,15 +72,17 @@ const rainColor= new Color("#ffffff", 1)
 const shadow1 = new Color("#000000", 0)
 const shadow2 = new Color("#000000", 0)
 const shadow3 = new Color("#000000", 0)
-
+const widgetSize = getWidgetSizeInPoint();
+console.log("width:" +Device.screenSize().width +
+", height: " +Device.screenSize().height)
 let drawContext = new DrawContext();
 
-const horizontalPad = padding < 10 ? 10 - padding : 10
-const verticalPad = padding < 10 ? 0 - padding : 0
+const horizontalPad = padding < 10 ? 10 - padding : 5;
+const verticalPad = padding < 10 ? 0 - padding : 0;
 
 
 // did not follow up at upper definitions & set DrawContext Size to fixed value - matching iPhone 11 Pro Max
-drawContext.size = new Size(maxWidth,maxHeight)
+drawContext.size = new Size(maxWidth ,maxHeight)
 drawContext.opaque = false
 drawContext.setTextAlignedCenter()
 
@@ -100,7 +96,7 @@ const textFormat = {
   // Set the default font and color.
   // blank values will use the default.
   defaultText: { 
-      size: 20, 
+      size: 18, 
       color: "ffffff", 
       font: "" 
   },
@@ -134,39 +130,39 @@ const textFormat = {
       font: "medium" 
   },
   location: { 
-      size: 24, 
+      size: 21, 
       color: "", 
       font: "bold", 
       opacity: 1
   },
   desconly: { 
-      size: 16, 
+      size: 13, 
       color: "", 
       font: "regular", 
       opacity: 1
   },
   HiLotemp: { 
-      size: 16, 
+      size: 13, 
       color: "", 
       font: "regular", 
       opacity: 1
   },
   databtm: { 
-      size: 18, 
+      size: 13, 
       color: "ffffff", 
       font: "regular", 
       opacity: 1
   },
   databtmtxt: { 
-      size: 18, 
+      size: 13, 
       color: "ffffff", 
       font: "regular", 
       opacity: 1
   },
   updatetxt: { 
-      size: 18, 
-      color: "A5A8A8", 
-      font: "light", 
+      size: 9, 
+      color: "ffffff", 
+      font: "semibold", 
       opacity: 1
   },
   warning: { 
@@ -201,28 +197,36 @@ const textFormat = {
 const items = [
  	
  	row(36),
-	    column(150),
-            space(1),
+	    column(145),
+         space(0),
 			left,
 			currentLoc,
-		
+			
 		column,
-		    space(1),
+		    space(15),
+          left,
+          wind,
+
+		column,
+		    space(15),
 			right,
             maxtemp,
             
-    row(18),
-      column(150),
+    row(24),
+      column(145),
           left,
-          desconly,
+          desconly, 
 
       column,
-          center,
+          left,
+          rain,
           offline,
+          
       
       column(),
           right,
           mintemp,
+          
           
 	row(chartHeight),
 		column,
@@ -233,9 +237,21 @@ const items = [
         column,
 			center,
 			drawdiagramdaily,
+		
+   row(14),
+      column,
+        space(5),
+			center,
+	   		updatedtime,
 	    
+   /*row,
 
-/*
+		
+  column,
+			right,
+	   		rain,
+	
+
   row,
 
 		column(95),
@@ -363,7 +379,38 @@ if (widgetPreview === "medium" || config.widgetFamily === "medium") {
 }
 
 
+function getWidgetSizeInPoint(widgetSize = (config.runsInWidget ? config.widgetFamily : null)) {
+  // stringify device screen size
+  const devSize = `${Device.screenSize().width}x${Device.screenSize().height}`
+  // screen size to widget size mapping for iPhone, excluding the latest iPhone 12 series. iPad size
+  const sizeMap = {
+    // iPad Mini 2/3/4, iPad 3/4, iPad Air 1/2. 9.7" iPad Pro
+    // '768x1024': { small: [0, 0], medium: [0, 0], large: [0, 0] },
+    // 10.5" iPad Pro
+    // '834x1112': { small: [0, 0], medium: [0, 0], large: [0, 0] },
+    // 12.9" iPad Pro
+    // '1366x1024': { small: [0, 0], medium: [0, 0], large: [0, 0] },
+    // XR, 11, 11 Pro Max
+    '414x896': { small: [169, 169], medium: [360, 169], large: [360, 376] },
+    // X, XS, 11 Pro
+    '375x812': { small: [155, 155], medium: [329, 155], large: [329, 345] },
+    // 6/7/8(S) Plus
+    '414x736': { small: [159, 159], medium: [348, 159], large: [348, 357] },
+    // 6/7/8(S) and 2nd Gen SE
+    '375x667': { small: [148, 148], medium: [322, 148], large: [322, 324] },
+    // 1st Gen SE
+    '320x568': { small: [141, 141], medium: [291, 141], large: [291, 299] }
+  }
+  let widgetSizeInPoint = null
 
+  if (widgetSize) {
+    let mappedSize = sizeMap[devSize]
+    if (mappedSize) {
+      widgetSizeInPoint = new Size(...mappedSize[widgetSize])
+    }
+  }
+  return widgetSizeInPoint
+}
 
 
 
@@ -417,7 +464,7 @@ const widget = new ListWidget()
 
 externalLink && (widget.url = externalLink)
 
-widget.setPadding(5, 10, 15, 10)
+widget.setPadding(paddingTopBottom, paddingLeftRight, paddingTopBottom, paddingLeftRight)
 widget.spacing = -1.2
 
 
@@ -497,7 +544,10 @@ Script.complete()
  * ============================
  */
 
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Provide the named function.
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function provideFunction(name) {
   const functions = {
     space() { return space },
@@ -544,8 +594,9 @@ function provideFunction(name) {
 
 
 
-
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Processes a single line of ASCII. 
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 async function processLine(lineInput) {
   
   // Because iOS loves adding periods to everything.
@@ -625,8 +676,9 @@ async function processLine(lineInput) {
 
 
 
-
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Runs the function names in each column.
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 async function enumerateColumns() {
   if (currentColumns.length > 0) {
     for (col of currentColumns) {
@@ -658,10 +710,14 @@ async function enumerateColumns() {
 /*
  * LAYOUT FUNCTIONS
  * These functions manage spacing and alignment.
- * =============================================
- */
+ * ======================================*/
 
+
+
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Makes a new row on the widget.
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function row(input = null) {
 
   function makeRow() {
@@ -684,8 +740,9 @@ function row(input = null) {
 
 
 
-
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Makes a new column on the widget.
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function column(input = null) {
  
   function makeColumn() {
@@ -708,8 +765,9 @@ function column(input = null) {
 
 
 
-
-// Create an aligned stack to add content to.
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Create an aligned stack 
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function align(column) {
   
   // Add the containing stack to the column.
@@ -725,8 +783,9 @@ function align(column) {
 
 
 
-
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Create a right-aligned stack.
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function alignRight(alignmentStack) {
   alignmentStack.addSpacer()
   let returnStack = alignmentStack.addStack()
@@ -736,8 +795,9 @@ function alignRight(alignmentStack) {
 
 
 
-
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Create a left-aligned stack.
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function alignLeft(alignmentStack) {
   let returnStack = alignmentStack.addStack()
   alignmentStack.addSpacer()
@@ -747,8 +807,9 @@ function alignLeft(alignmentStack) {
 
 
 
-
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Create a center-aligned stack.
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function alignCenter(alignmentStack) {
   alignmentStack.addSpacer()
   let returnStack = alignmentStack.addStack()
@@ -759,8 +820,9 @@ function alignCenter(alignmentStack) {
 
 
 
-
-// adds a space, with an optional amount.
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// adds a space, by amount (optional)
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 function space(input = null) { 
   
   // This function adds a spacer with the input width.
@@ -782,23 +844,32 @@ function space(input = null) {
 
 
 
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Change the alignment to right.
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+function right(x) { 
+    currentAlignment = alignRight 
+}
 
-// Change the current alignment to right.
-function right(x) { currentAlignment = alignRight }
 
 
 
-
-
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Change the current alignment to left.
-function left(x) { currentAlignment = alignLeft }
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+function left(x) { 
+    currentAlignment = alignLeft 
+}
 
 
 
 
-
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Change the current alignment to center.
-function center(x) { currentAlignment = alignCenter }
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+function center(x) { 
+    currentAlignment = alignCenter 
+}
 
 
 
@@ -810,7 +881,11 @@ function center(x) { currentAlignment = alignCenter }
  * ==============================================
  */
 
-// Set up the gradient for the widget background.
+
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Set up a gradient background.
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 async function setupGradient() {
   var dawnGradientColor1 = new Color("142C52");
   var dawnGradientColor2 = new Color("1B416F");
@@ -880,8 +955,9 @@ async function setupGradient() {
 
 
 
-
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Set up the locationData object.
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 async function setupLocation() {
 
   locationData = {}
@@ -919,8 +995,9 @@ async function setupLocation() {
 
 
 
-
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Set up the sunData object.
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 async function setupSunrise() {
 
   // Requirements: location
@@ -979,8 +1056,9 @@ async function setupSunrise() {
 
 
 
-
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Set up the weatherData object.
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 async function setupWeather() {
 
   // Requirements: location
@@ -1039,7 +1117,11 @@ async function setupWeather() {
  * ============================================
  */
 
+
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Display the date on the widget.
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 async function date(column) {
 
   // Requirements: events (if dynamicDateSize is enabled)
@@ -1072,9 +1154,9 @@ async function date(column) {
 }
 
 
-
-
-
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Draw the hourly graph
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 async function drawdiagram(column) {
   // Requirements: weather and sunrise
 	
@@ -1118,7 +1200,7 @@ async function drawdiagram(column) {
           hourDay = day;
           break;
         }
-		  }
+    }
       // 'Night' boolean for line graph and SFSymbols
       night = (hourData.dt > hourDay.sunset || hourData.dt < hourDay.sunrise)    
 	
@@ -1204,6 +1286,10 @@ async function drawdiagram(column) {
 
 
 
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Draw the daily graph
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 async function drawdiagramdaily(column) {
  
 	// Requirements: weather and sunrise
@@ -1322,8 +1408,11 @@ async function drawdiagramdaily(column) {
 
 
 
-// display location ONLY on screen - thewaytozionmod
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// display location ONLY on screen
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 async function currentLoc(column) {
+   // 	thewaytozionmod
 	// Requirements: location
   if (!locationData) { await setupLocation() }
   	
@@ -1346,7 +1435,9 @@ async function currentLoc(column) {
 
 
 
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Display the current weather.
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 async function desconly(column) {
 
    // Requirements: weather and sunrise
@@ -1368,8 +1459,9 @@ async function desconly(column) {
 
 
 
-// Display the current weather.
-
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Display the current max.
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 async function maxtemp(column) {
 
    // Requirements: weather and sunrise
@@ -1388,8 +1480,9 @@ async function maxtemp(column) {
 
 
 
-
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Display the current min temp.
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 async function mintemp(column) {
 
    // Requirements: weather and sunrise
@@ -1410,8 +1503,9 @@ async function mintemp(column) {
 
 
 
-
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Display the current sunset.
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 async function sunsetonly(column) {
   // Requirements: sunrise
   if (!sunData) { await setupSunrise() }
@@ -1443,10 +1537,10 @@ async function sunsetonly(column) {
 
 
 
-
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Display the current sunrise.
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 async function sunriseonly(column) {
-
 
   // Requirements: sunrise
   if (!sunData) { await setupSunrise() }
@@ -1475,8 +1569,9 @@ async function sunriseonly(column) {
 
 
 
-
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Display the current feelslike. 
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 async function feelslike(column) {
 
    // Requirements: weather and sunrise
@@ -1500,7 +1595,10 @@ async function feelslike(column) {
 
 
 
-// Display the current chance of rain.
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Display the current chance of rain
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 async function rain(column) {
 
    // Requirements: weather and sunrise
@@ -1511,7 +1609,7 @@ async function rain(column) {
   rainStack.setPadding(padding, 0, 0, 0)
 //   rainStack.size = new Size(55, 0);
 
-  const rainText = Math.round(100*weatherData.hourly[0].pop).toString() +"%"
+  const rainText = "🌧 " +Math.round(100*weatherData.hourly[0].pop).toString() +"%"
   const rain = provideText(rainText, rainStack, textFormat.databtm)
 rain.rightAlignText()
 }
@@ -1520,7 +1618,9 @@ rain.rightAlignText()
 
 
 
-// Display the current weather. 
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Display the current dewpoint. 
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 async function dewpoint(column) {
 
    // Requirements: weather and sunrise
@@ -1540,7 +1640,9 @@ async function dewpoint(column) {
 
 
 
-// Display the current weather. 
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Display the current humidity. 
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 async function humidity(column) {
 
    // Requirements: weather and sunrise
@@ -1560,7 +1662,9 @@ async function humidity(column) {
 
 
 
-// Display the current weather. 
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Display the current air pressure. 
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 async function pressure(column) {
 
    // Requirements: weather and sunrise
@@ -1588,7 +1692,9 @@ async function pressure(column) {
 
 
 
-// Display the current weather.
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Display the current wind.
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 async function wind(column) {
 
    // Requirements: weather and sunrise
@@ -1621,7 +1727,7 @@ console.log("direction " + direction)
   // Set up the current weather stack.
   let windStack = align(column)
   windStack.setPadding(padding, 0, 0, 0)
-  const windText = Math.round(weatherData.current.wind_speed).toString() + unit + winddir
+  const windText = "💨" +Math.round(weatherData.current.wind_speed).toString() + unit + winddir
 // const windText = Math.round(weatherData.current.wind_speed).toString() +" m/s "
   const wind = provideText(windText, windStack, textFormat.databtm)
  
@@ -1632,7 +1738,9 @@ console.log("direction " + direction)
 
 
 
-// Display the current weather.
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Display the current uv index.
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 async function UVIndex(column) {
 
    // Requirements: weather and sunrise
@@ -1651,7 +1759,10 @@ async function UVIndex(column) {
 
 
 
-// Display the current weather.
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Display the current clouds.
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 async function clouds(column) {
 
    // Requirements: weather and sunrise
@@ -1669,8 +1780,9 @@ async function clouds(column) {
 
 
 
-
-// get time to show updated time
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// get the last updated time
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 async function updatedtime(column) {
   // Requirements: weather and sunrise
   if (!weatherData) { await setupWeather() }
@@ -1679,9 +1791,9 @@ async function updatedtime(column) {
   const updatedStack = align(column)
   updatedStack.setPadding(0, padding, 0, 0)
   
-  //console.log("update " +weatherData.update)
+  console.log("update " +weatherData.update)
 
-  const updatedText = ("Update:" + weatherData.update)
+  const updatedText = ("Last Updated " + weatherData.update)
 
 
 //const updatedText = formatTime(new Date(weatherData.update))
@@ -1694,7 +1806,9 @@ async function updatedtime(column) {
 
 
 
-
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//  show any weather alerts
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 async function alerts(column) {
   if (showAlerts) {
     // Requirements: weather and sunrise
@@ -1721,8 +1835,9 @@ async function alerts(column) {
 
 
 
-
-// Display the current weather
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Display the current sunset time
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 async function sunsetonlytxt(column) {
   // Requirements: sunrise
   
@@ -1741,7 +1856,10 @@ async function sunsetonlytxt(column) {
 
 
 
-// Display the current weather. 
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Display the current sunrise time
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 async function sunriseonlytxt(column) {
   const sunriseonlyStack = align(column)
   sunriseonlyStack.setPadding(padding, 0, 0, 0)
@@ -1753,8 +1871,9 @@ async function sunriseonlytxt(column) {
 
 
 
-
-// Display the current weather. 
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Display the current feels like. 
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 async function feelsliketxt(column) {
   // Set up the current weather stack.
   
@@ -1770,7 +1889,9 @@ async function feelsliketxt(column) {
 
 
 
-// Display the current weather. 
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Display the current rain text. 
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 async function raintxt(column) {
   // Set up the current weather stack.
   
@@ -1785,7 +1906,10 @@ async function raintxt(column) {
 
 
 
-// Display the current weather. 
+
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Display the current dewpoint txt. 
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 async function dewpointtxt(column) {
   // Set up the current weather stack.
   
@@ -1798,8 +1922,9 @@ async function dewpointtxt(column) {
 
 
 
-
-// Display the current weather. 
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Display the current humiditytxt. 
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 async function humiditytxt(column) {
  
   // Set up the current weather stack.
@@ -1814,7 +1939,9 @@ async function humiditytxt(column) {
 
 
 
-// Display the current weather. 
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Display the current pressure txt. 
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 async function pressuretxt(column) {
   // Set up the current weather stack.
   
@@ -1828,8 +1955,9 @@ async function pressuretxt(column) {
 
 
 
-
-// Display the current weather. 
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Display the current wind txt. 
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 async function windtxt(column) {
   let windStack = align(column)
   windStack.setPadding(padding, 0, 0, 0)
@@ -1841,7 +1969,9 @@ async function windtxt(column) {
 
 
 
-// Display the current weather. 
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Display the current uv index. 
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 async function UVIndextxt(column) {
   // Set up the current weather stack.
   
@@ -1855,8 +1985,9 @@ async function UVIndextxt(column) {
 
 
 
-
-// Display the current weather. 
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Display the current clouds txt. 
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 async function cloudstxt(column) {
   // Set up the current weather stack.
   
@@ -1871,7 +2002,9 @@ async function cloudstxt(column) {
 
 
 
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Show the sunrise or sunset time.
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 async function sunrise(column) {
   
   // Requirements: sunrise
@@ -1933,7 +2066,9 @@ async function sunset(column) {
 
 
 
-
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Show when weather is offline
+// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 async function offline(column) {
 
   let offline = false
