@@ -11,7 +11,7 @@
  /// <reference path="../scriptable.d.ts" />
 
 // To use weather, get a free API key at openweathermap.org/appid and paste it in between the quotation marks.
-const apiKey = "c86deb6077d477b149c872e002dab460"
+const apiKey = "YOUR-API-KEY"
 
 // Set the locale code. Leave blank "" to match the device's locale. You can change the hard-coded text strings in the TEXT section below.
 let locale = ""
